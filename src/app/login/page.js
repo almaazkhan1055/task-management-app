@@ -79,7 +79,7 @@ function Login() {
           </form>
         </CardContent>
         <CardFooter className="flex justify-between gap-2">
-          <CardTitle>Don't have an account?</CardTitle>
+          <CardTitle>Don&#39;t have an account?</CardTitle>
           <Link href="/signup">
             <Button>Sign Up</Button>
           </Link>
