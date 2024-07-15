@@ -14,11 +14,16 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function NavBar() {
+const NavBar = () => {
   const router = useRouter();
 
   const handleLogout = () => {
+    localStorage.removeItem("userEmail");
     router.push("/login");
+  };
+
+  const handleClick = () => {
+    router.push("/home");
   };
 
   return (
@@ -107,16 +112,19 @@ export default function NavBar() {
           </div>
           <div className="border-t border-gray-200 dark:border-gray-700 pb-3 pt-4">
             <div className="mx-auto flex max-w-3xl items-center px-4 sm:px-6">
-              <Link
+              <Button
+                onClick={handleLogout}
                 href="/"
-                className="inline-flex items-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                className="inline-flex items-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:bg-red-600 dark:hover:bg-red-500"
               >
                 Logout
-              </Link>
+              </Button>
             </div>
           </div>
         </PopoverPanel>
       </Popover>
     </>
   );
-}
+};
+
+export default NavBar;

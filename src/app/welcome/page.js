@@ -1,7 +1,7 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -10,8 +10,15 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import ToggleTheme from "@/components/ui/toggleTheme";
+import { useRouter } from "next/navigation";
 
 const Welcome = () => {
+  const router = useRouter();
+  useEffect(() => {
+    const user = localStorage.getItem("userEmail");
+    if (user) router.push("/home");
+    if (!user) router.push("/");
+  }, []);
   return (
     <div className="flex items-center justify-center h-[100dvh]">
       <Card>

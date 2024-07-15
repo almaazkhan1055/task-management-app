@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
 import { Button } from "@/components/ui/button";
@@ -39,6 +39,13 @@ function Signup() {
       setError(error.message);
     }
   };
+
+  useEffect(() => {
+    const user = localStorage.getItem("userEmail");
+    console.log("user", user);
+    if (user) router.push("/home");
+    if (!user) router.push("/login");
+  }, []);
 
   return (
     <div className="flex items-center justify-center h-[100dvh]">

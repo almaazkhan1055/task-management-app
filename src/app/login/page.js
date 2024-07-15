@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
 import { Button } from "@/components/ui/button";
@@ -26,9 +26,15 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+
+      localStorage.setItem("userEmail", user.email);
       router.push("/home");
-      console.log("logeed in");
     } catch (error) {
       console.error("Login error:", error);
       if (error.code === "auth/user-not-found") {
@@ -38,6 +44,13 @@ function Login() {
       }
     }
   };
+
+  useEffect(() => {
+    const user = localStorage.getItem("userEmail");
+    console.log("user", user);
+    if (user) router.push("/home");
+    if (!user) router.push("/login");
+  }, []);
 
   return (
     <div className="flex items-center justify-center h-[100dvh]">

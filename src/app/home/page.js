@@ -10,6 +10,7 @@ import {
 import NavBar from "@/components/ui/navBar";
 import EditTask from "../../components/ui/editTask";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [tasks, setTasks] = useState([]);
@@ -17,7 +18,12 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [editingTaskId, setEditingTaskId] = useState(null);
 
+  const router = useRouter();
+
   useEffect(() => {
+    const user = localStorage.getItem("userEmail");
+    if (!user) router.push("/");
+    if (user) router.push("/home");
     fetchTasks();
   }, []);
 
@@ -138,14 +144,18 @@ export default function Home() {
                 />
               ) : (
                 <>
-                  <CardHeader>
+                  <CardHeader className="capitalize">
                     <CardTitle>Title: {task.title}</CardTitle>
                     <CardDescription>
                       Assigned to: {task.assignee}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p>Description: {task.description}</p>
+                    <CardDescription className="capitalize">
+                      <span>Description: {task.description}</span>
+                      <br />
+                      <span>Status: {task.taskStatus}</span>
+                    </CardDescription>
                     <p className="text-sm text-gray-500 mt-2">
                       Created: {task.createdAt}
                     </p>
@@ -153,7 +163,7 @@ export default function Home() {
                       <Button
                         onClick={() => handleEditClick(task.id)}
                         variant="outline"
-                        className="bg-black text-white text-lg hover:bg-green-600 hover:text-white"
+                        className="bg-black text-white text-lg hover:bg-green-600 hover:text-white dark:hover:bg-green-600"
                       >
                         Edit
                       </Button>

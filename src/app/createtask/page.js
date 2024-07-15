@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,6 +19,7 @@ export default function CreateTask() {
   const [description, setDescription] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [taskStatus, settaskStatus] = useState("");
 
   const router = useRouter();
 
@@ -26,7 +27,7 @@ export default function CreateTask() {
     e.preventDefault();
     setIsLoading(true);
 
-    if (title && description && assignedTo) {
+    if (title && description && assignedTo && taskStatus) {
       try {
         const now = new Date();
         const createdAt = `${now.toDateString()} ${now.toLocaleTimeString()}`;
@@ -39,9 +40,10 @@ export default function CreateTask() {
             },
             body: JSON.stringify({
               title,
-              description,
               assignee: assignedTo,
+              description,
               createdAt,
+              taskStatus,
             }),
           }
         );
@@ -51,6 +53,7 @@ export default function CreateTask() {
           setTitle("");
           setDescription("");
           setAssignedTo("");
+          settaskStatus("");
           router.push("/home");
         } else {
           throw new Error("Failed to create task");
@@ -65,6 +68,16 @@ export default function CreateTask() {
       setIsLoading(false);
     }
   };
+
+  const handleClick = () => {
+    router.push("/home");
+  };
+
+  useEffect(() => {
+    const user = localStorage.getItem("userEmail");
+    if (!user) router.push("/");
+    if (user) router.push("/createtask");
+  }, []);
 
   return (
     <div className="flex items-center justify-center h-[100dvh]">
@@ -106,9 +119,23 @@ export default function CreateTask() {
                   required
                 />
               </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="select">Task Status</Label>
+                <select
+                  id="select"
+                  value={taskStatus}
+                  onChange={(e) => {
+                    settaskStatus(e.target.value);
+                  }}
+                >
+                  <option>To do</option>
+                  <option>In Progress</option>
+                  <option>Completed</option>
+                </select>
+              </div>
             </div>
             <CardFooter className="flex justify-between mt-4 p-0">
-              <Button type="button" variant="outline">
+              <Button onClick={handleClick} type="button" variant="outline">
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
