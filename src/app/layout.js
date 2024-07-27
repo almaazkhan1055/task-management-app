@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${inter.className} bg-white dark:bg-gray-900 text-gray-900 dark:text-white`}
+        className={`${inter.className} bg-white  text-gray-900 dark:bg-gray-900 dark:text-white`}
       >
         <ThemeProvider>{children}</ThemeProvider>
       </body>

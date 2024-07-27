@@ -44,7 +44,7 @@ function Signup() {
     const user = localStorage.getItem("userEmail");
     console.log("user", user);
     if (user) router.push("/home");
-    if (!user) router.push("/login");
+    if (!user) router.push("/signup");
   }, []);
 
   return (

@@ -111,7 +111,7 @@ export default function Home() {
       <>
         <NavBar />
         <div className="flex items-center justify-center flex-col h-[100dvh] text-3xl font-bold">
-          <p>...Loading</p>
+          <div className="loader"></div>
         </div>
       </>
     );
@@ -130,7 +130,7 @@ export default function Home() {
 
   return (
     <>
-      <NavBar />
+      <NavBar tasks={tasks} />
       <div className="font-bold text-xl px-10 py-5">
         <h1 className="text-2xl font-bold mb-4">Task List</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

@@ -15,11 +15,14 @@ import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 
 export default function CreateTask() {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [assignedTo, setAssignedTo] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [taskStatus, settaskStatus] = useState("");
+
+  const [taskList, setTaskList] = useState({
+    title: "",
+    description: "",
+    assignedTo: "",
+    taskStatus: "",
+  });
 
   const router = useRouter();
 
@@ -27,7 +30,12 @@ export default function CreateTask() {
     e.preventDefault();
     setIsLoading(true);
 
-    if (title && description && assignedTo && taskStatus) {
+    if (
+      taskList.title &&
+      taskList.description &&
+      taskList.assignedTo &&
+      taskList.taskStatus
+    ) {
       try {
         const now = new Date();
         const createdAt = `${now.toDateString()} ${now.toLocaleTimeString()}`;
@@ -39,21 +47,17 @@ export default function CreateTask() {
               "Content-type": "application/json",
             },
             body: JSON.stringify({
-              title,
-              assignee: assignedTo,
-              description,
               createdAt,
-              taskStatus,
+              title: taskList.title,
+              assignee: taskList.assignedTo,
+              description: taskList.description,
+              taskStatus: taskList.taskStatus,
             }),
           }
         );
         if (res.ok) {
           const data = await res.json();
           console.log("Task created with ID:", data.name);
-          setTitle("");
-          setDescription("");
-          setAssignedTo("");
-          settaskStatus("");
           router.push("/home");
         } else {
           throw new Error("Failed to create task");
@@ -81,7 +85,7 @@ export default function CreateTask() {
 
   return (
     <div className="flex items-center justify-center h-[100dvh]">
-      <Card className="w-[350px]">
+      <Card className="skeleton w-[350px]">
         <CardHeader>
           <CardTitle>Create Task</CardTitle>
           <CardDescription>Deploy your new Task in one-click.</CardDescription>
@@ -94,8 +98,15 @@ export default function CreateTask() {
                 <Input
                   id="title"
                   placeholder="Title of your task"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  value={taskList.title}
+                  onChange={(e) =>
+                    setTaskList((prev) => {
+                      return {
+                        ...prev,
+                        title: e.target.value,
+                      };
+                    })
+                  }
                   required
                 />
               </div>
@@ -104,8 +115,15 @@ export default function CreateTask() {
                 <Input
                   id="description"
                   placeholder="Description of your task"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  value={taskList.description}
+                  onChange={(e) =>
+                    setTaskList((prev) => {
+                      return {
+                        ...prev,
+                        description: e.target.value,
+                      };
+                    })
+                  }
                   required
                 />
               </div>
@@ -114,20 +132,35 @@ export default function CreateTask() {
                 <Input
                   id="name"
                   placeholder="Whom to assign"
-                  value={assignedTo}
-                  onChange={(e) => setAssignedTo(e.target.value)}
+                  value={taskList.assignedTo}
+                  onChange={(e) =>
+                    setTaskList((prev) => {
+                      return {
+                        ...prev,
+                        assignedTo: e.target.value,
+                      };
+                    })
+                  }
                   required
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="select">Task Status</Label>
                 <select
+                  className="dark:bg-gray-900 dark:text-white"
                   id="select"
-                  value={taskStatus}
+                  value={taskList.taskStatus}
                   onChange={(e) => {
-                    settaskStatus(e.target.value);
+                    console.log(e);
+                    setTaskList((prev) => {
+                      return {
+                        ...prev,
+                        taskStatus: e.target.value,
+                      };
+                    });
                   }}
                 >
+                  <option>Select Option</option>
                   <option>To do</option>
                   <option>In Progress</option>
                   <option>Completed</option>

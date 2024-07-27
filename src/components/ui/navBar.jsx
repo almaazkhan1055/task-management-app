@@ -4,6 +4,9 @@ import Link from "next/link";
 import ToggleTheme from "./toggleTheme";
 import { useRouter } from "next/navigation";
 import { Button } from "./button";
+import Filter from "./filter";
+import { FaFilter } from "react-icons/fa";
+import { useState } from "react";
 
 const navigation = [
   { name: "Home", href: "/home", current: false },
@@ -14,8 +17,10 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const NavBar = () => {
+const NavBar = ({ tasks }) => {
+  console.log("tasks,", tasks);
   const router = useRouter();
+  const [screen, setScreen] = useState();
 
   const handleLogout = () => {
     localStorage.removeItem("userEmail");
@@ -24,6 +29,10 @@ const NavBar = () => {
 
   const handleClick = () => {
     router.push("/home");
+  };
+
+  const handleFilterClick = () => {
+    setScreen("filter");
   };
 
   return (
@@ -71,6 +80,26 @@ const NavBar = () => {
               </PopoverButton>
             </div>
             <div className="hidden lg:flex lg:items-center lg:justify-end xl:col-span-4">
+              <div onClick={handleFilterClick}>
+                <FaFilter />
+              </div>
+              {screen === "filter" && (
+                <div>
+                  <div className="filterWrp  h-[300px] w-[300px] fixed z-1 bg-[#b51717]">
+                    <div className="filterIwrp">
+                      Assigned to
+                      <ul>
+                        <li>
+                          {tasks.map((task) => {
+                            return <div>{task.assignee}</div>;
+                          })}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <Link
                 href="/createtask"
                 className="ml-6 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -80,7 +109,7 @@ const NavBar = () => {
               <Button
                 onClick={handleLogout}
                 href="/"
-                className="ml-6 inline-flex items-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                className="ml-6 inline-flex items-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600  dark:bg-red-600 dark:hover:bg-red-500"
               >
                 Logout
               </Button>
