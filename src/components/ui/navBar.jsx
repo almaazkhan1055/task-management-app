@@ -4,9 +4,9 @@ import Link from "next/link";
 import ToggleTheme from "./toggleTheme";
 import { useRouter } from "next/navigation";
 import { Button } from "./button";
-import Filter from "./filter";
 import { FaFilter } from "react-icons/fa";
 import { useState } from "react";
+import Modal from "./modal";
 
 const navigation = [
   { name: "Home", href: "/home", current: false },
@@ -18,21 +18,11 @@ function classNames(...classes) {
 }
 
 const NavBar = ({ tasks }) => {
-  console.log("tasks,", tasks);
   const router = useRouter();
-  const [screen, setScreen] = useState();
 
   const handleLogout = () => {
     localStorage.removeItem("userEmail");
     router.push("/login");
-  };
-
-  const handleClick = () => {
-    router.push("/home");
-  };
-
-  const handleFilterClick = () => {
-    setScreen("filter");
   };
 
   return (
@@ -43,10 +33,10 @@ const NavBar = ({ tasks }) => {
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="relative flex justify-between lg:gap-8 xl:grid xl:grid-cols-12">
-            <div className="flex md:absolute md:inset-y-0 md:left-0 lg:static xl:col-span-2">
-              <div className="flex flex-shrink-0 items-center">
-                <ToggleTheme />
-              </div>
+            <div className="flex md:absolute md:inset-y-0 md:left-0 lg:static xl:col-span-2 items-center">
+              <Link href="/" className="text-xl font-bold text-center">
+                TASK MANAGEMENT
+              </Link>
             </div>
             <div className="min-w-0 flex-1 md:px-8 lg:px-0 xl:col-span-6">
               <div className="flex items-center px-6 py-4 md:mx-auto md:max-w-3xl lg:mx-0 lg:max-w-none xl:px-0">
@@ -80,26 +70,6 @@ const NavBar = ({ tasks }) => {
               </PopoverButton>
             </div>
             <div className="hidden lg:flex lg:items-center lg:justify-end xl:col-span-4">
-              <div onClick={handleFilterClick}>
-                <FaFilter />
-              </div>
-              {screen === "filter" && (
-                <div>
-                  <div className="filterWrp  h-[300px] w-[300px] fixed z-1 bg-[#b51717]">
-                    <div className="filterIwrp">
-                      Assigned to
-                      <ul>
-                        <li>
-                          {tasks.map((task) => {
-                            return <div>{task.assignee}</div>;
-                          })}
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              )}
-
               <Link
                 href="/createtask"
                 className="ml-6 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -109,10 +79,13 @@ const NavBar = ({ tasks }) => {
               <Button
                 onClick={handleLogout}
                 href="/"
-                className="ml-6 inline-flex items-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600  dark:bg-red-600 dark:hover:bg-red-500"
+                className="ml-6 inline-flex items-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600  dark:bg-red-600 dark:hover:bg-red-500 dark:text-white"
               >
                 Logout
               </Button>
+              <div className="flex flex-shrink-0 ml-4 items-center">
+                <ToggleTheme />
+              </div>
             </div>
           </div>
         </div>
@@ -138,6 +111,9 @@ const NavBar = ({ tasks }) => {
                 {item.name}
               </Link>
             ))}
+            <div className="flex flex-shrink-0 ml-4 items-center">
+              <ToggleTheme />
+            </div>
           </div>
           <div className="border-t border-gray-200 dark:border-gray-700 pb-3 pt-4">
             <div className="mx-auto flex max-w-3xl items-center px-4 sm:px-6">

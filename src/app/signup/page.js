@@ -57,7 +57,7 @@ function Signup() {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="grid w-full items-center gap-4">
-              <div className="flex flex-col space-y-1.5">
+              <div className="flex flex-col space-y-1.5 my-5">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
@@ -80,14 +80,16 @@ function Signup() {
                 />
               </div>
               {error && <div className="text-red-500">{error}</div>}
-              <Button type="submit">Sign Up</Button>
+              <Button type="submit" className="my-5 hover:bg-green-600">
+                Sign Up
+              </Button>
             </div>
           </form>
         </CardContent>
         <CardFooter className="flex justify-between gap-2">
           <CardTitle>Already have an account?</CardTitle>
           <Link href="/login">
-            <Button>Login Now</Button>
+            <Button className="hover:bg-green-600">Login Now</Button>
           </Link>
         </CardFooter>
       </Card>

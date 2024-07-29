@@ -1,5 +1,6 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -7,48 +8,51 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import NavBar from "@/components/ui/navBar";
 import EditTask from "../../components/ui/editTask";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { FaFilter } from "react-icons/fa";
-import Modal from "@/components/ui/modal";
 
-export default function Home() {
-  const [tasks, setTasks] = useState([]);
+const FilteredTask = () => {
+  const [filteredTasks, setFilteredTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editingTaskId, setEditingTaskId] = useState(null);
-  const [screen, setScreen] = useState(false);
-
-  const router = useRouter();
+  const searchParams = useSearchParams();
+  const assignee = searchParams.get("assignee");
 
   useEffect(() => {
-    const user = localStorage.getItem("userEmail");
-    if (!user) router.push("/");
-    if (user) router.push("/home");
-    fetchTasks();
-  }, []);
+    fetchFilteredTasks();
+  }, [assignee]);
 
-  const fetchTasks = async () => {
+  const fetchFilteredTasks = async () => {
+    if (!assignee) {
+      setIsLoading(false);
+      return;
+    }
+
     try {
+      setIsLoading(true);
       const response = await fetch(
-        "https://task-management-app-6e356-default-rtdb.firebaseio.com/taskRecord.json"
+        `https://task-management-app-6e356-default-rtdb.firebaseio.com/taskRecord.json`
       );
+
       if (!response.ok) {
         throw new Error("Failed to fetch tasks");
       }
+
       const data = await response.json();
 
-      const tasksArray = Object.keys(data).map((key) => ({
-        id: key,
-        ...data[key],
-      }));
+      const tasksArray = Object.keys(data)
+        .map((key) => ({
+          id: key,
+          ...data[key],
+        }))
+        .filter((task) => task.assignee === assignee);
 
-      setTasks(tasksArray);
+      setFilteredTasks(tasksArray);
     } catch (error) {
       console.error("Error fetching tasks:", error);
-      setError("No task found.");
+      setError("Failed to fetch tasks. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -79,7 +83,7 @@ export default function Home() {
         throw new Error("Failed to update task");
       }
 
-      setTasks((prevTasks) =>
+      setFilteredTasks((prevTasks) =>
         prevTasks.map((task) => (task.id === editedTask.id ? editedTask : task))
       );
       setEditingTaskId(null);
@@ -102,15 +106,13 @@ export default function Home() {
         throw new Error("Failed to delete task");
       }
 
-      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+      setFilteredTasks((prevTasks) =>
+        prevTasks.filter((task) => task.id !== taskId)
+      );
     } catch (error) {
       console.error("Error deleting task:", error);
       setError("Failed to delete task. Please try again.");
     }
-  };
-
-  const handleFilterClick = () => {
-    setScreen(!screen);
   };
 
   if (isLoading) {
@@ -137,19 +139,13 @@ export default function Home() {
 
   return (
     <>
-      <NavBar tasks={tasks} />
-      <div
-        onClick={handleFilterClick}
-        className="flex items-center justify-end px-10 py-5"
-      >
-        <FaFilter />
-      </div>
-      <div>{screen && <Modal tasks={tasks} />}</div>
-
-      <div className="font-bold text-xl px-10 py-5">
-        <h1 className="text-2xl font-bold mb-4">Task List</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {tasks.map((task) => (
+      <NavBar />
+      <h2 className="text-3xl m-5">Filtered tasks for {assignee}</h2>
+      {filteredTasks.length === 0 ? (
+        <p className="text-xl m-5">No tasks found for this assignee.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 m-5">
+          {filteredTasks.map((task) => (
             <Card key={task.id} className="w-full">
               {editingTaskId === task.id ? (
                 <EditTask
@@ -196,7 +192,9 @@ export default function Home() {
             </Card>
           ))}
         </div>
-      </div>
+      )}
     </>
   );
-}
+};
+
+export default FilteredTask;
