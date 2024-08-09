@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import CustomizedSwitches from "../switch";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -53,10 +54,13 @@ function Login() {
   }, []);
 
   return (
-    <div className="flex items-center justify-center h-[100dvh]">
+    <div className="dark:bg-gray-800 bg-white flex items-center justify-center h-[100dvh]">
       <Card className="w-[350px]">
         <CardHeader>
-          <CardTitle>Login</CardTitle>
+          <CardTitle className="flex items-center justify-between">
+            Login
+            <CustomizedSwitches />
+          </CardTitle>
           <CardDescription>
             Enter your credentials to continue...
           </CardDescription>

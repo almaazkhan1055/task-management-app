@@ -198,10 +198,4 @@ const FilteredTask = () => {
   );
 };
 
-const FilteredTaskWrapper = () => (
-  <Suspense fallback={<div>Loading...</div>}>
-    <FilteredTask />
-  </Suspense>
-);
-
-export default FilteredTaskWrapper;
+export default FilteredTask;

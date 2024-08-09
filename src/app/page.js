@@ -1,12 +1,12 @@
 import React from "react";
-import Welcome from "./welcome/page";
+import Welcome from "./welcome";
 
-function page() {
+function Page() {
   return (
-    <div>
+    <div className="dark:bg-black bg-white">
       <Welcome />
     </div>
   );
 }
 
-export default page;
+export default Page;

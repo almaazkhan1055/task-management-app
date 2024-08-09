@@ -32,10 +32,10 @@ export default function Modal({ tasks }) {
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
           <DialogPanel
             transition
-            className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-sm sm:p-6 data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
+            className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-sm sm:p-6 data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95 dark:bg-gray-800"
           >
             <div>
-              <h2 className="filterIwrp text-black text-center text-2xl">
+              <h2 className="filterIwrp text-black text-center text-2xl dark:text-white">
                 Assigned to
               </h2>
               <div className="mt-3 text-center sm:mt-5 ">
@@ -47,7 +47,7 @@ export default function Modal({ tasks }) {
                     (assignee, index) => (
                       <div
                         key={index}
-                        className="text-black text-left cursor-pointer text-xl px-2 "
+                        className="text-black text-left cursor-pointer text-xl px-2 dark:text-white "
                       >
                         <span onClick={() => handleClick(assignee)}>
                           {assignee}

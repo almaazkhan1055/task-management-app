@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "../contexts/ThemeContext";
+import Theme from "@/context/themeContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,7 +15,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${inter.className} bg-white  text-gray-900 dark:bg-gray-900 dark:text-white`}
       >
-        <ThemeProvider>{children}</ThemeProvider>
+        <Theme>{children}</Theme>
       </body>
     </html>
   );

@@ -1,12 +1,10 @@
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import ToggleTheme from "./toggleTheme";
 import { useRouter } from "next/navigation";
 import { Button } from "./button";
-import { FaFilter } from "react-icons/fa";
-import { useState } from "react";
-import Modal from "./modal";
+import { useCallback, useState } from "react";
+import CustomizedSwitches from "@/app/switch";
 
 const navigation = [
   { name: "Home", href: "/home", current: false },
@@ -17,7 +15,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const NavBar = ({ tasks }) => {
+const NavBar = ({ fetchTasks, setTasks }) => {
   const router = useRouter();
 
   const handleLogout = () => {
@@ -25,16 +23,41 @@ const NavBar = ({ tasks }) => {
     router.push("/login");
   };
 
+  const searchHandler = async (e) => {
+    let tasks = await fetchTasks();
+    console.log("tasks", tasks);
+
+    let filtertasks = tasks.filter((task) => {
+      return task.assignee.toLowerCase().includes(e.target.value.toLowerCase());
+    });
+    setTasks(filtertasks);
+  };
+
+  function debounce(func, delay) {
+    let timeoutId;
+    return function (e) {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        func(e);
+      }, delay);
+    };
+  }
+
+  let debounceSearchHandler = debounce(searchHandler, 500);
+
   return (
     <>
       <Popover
         as="header"
-        className="bg-white dark:bg-gray-800 shadow-sm data-[open]:fixed data-[open]:inset-0 data-[open]:z-40 data-[open]:overflow-y-auto lg:static lg:overflow-y-visible data-[open]:lg:static data-[open]:lg:overflow-y-visible"
+        className="bg-white dark:bg-gray-800 shadow-sm data-[open]:fixed data-[open]:inset-0 data-[open]:z-40 data-[open]:overflow-y-auto lg:static lg:overflow-y-visible data-[open]:lg:static data-[open]:lg:overflow-y-visible dark:border-b-2"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="relative flex justify-between lg:gap-8 xl:grid xl:grid-cols-12">
+          <div className="relative flex justify-between lg:gap-8 ">
             <div className="flex md:absolute md:inset-y-0 md:left-0 lg:static xl:col-span-2 items-center">
-              <Link href="/" className="text-xl font-bold text-center">
+              <Link
+                href="/"
+                className="dark:text-white text-xl font-bold text-center"
+              >
                 TASK MANAGEMENT
               </Link>
             </div>
@@ -49,8 +72,9 @@ const NavBar = ({ tasks }) => {
                       id="search"
                       name="search"
                       type="search"
-                      placeholder="Search"
+                      placeholder="Search by assigned to"
                       className="block w-full rounded-md border-0 bg-white py-1.5 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                      onChange={(e) => debounceSearchHandler(e)}
                     />
                   </div>
                 </div>
@@ -84,7 +108,7 @@ const NavBar = ({ tasks }) => {
                 Logout
               </Button>
               <div className="flex flex-shrink-0 ml-4 items-center">
-                <ToggleTheme />
+                <CustomizedSwitches />
               </div>
             </div>
           </div>
@@ -111,9 +135,8 @@ const NavBar = ({ tasks }) => {
                 {item.name}
               </Link>
             ))}
-            <div className="flex flex-shrink-0 ml-4 items-center">
-              <ToggleTheme />
-            </div>
+            <CustomizedSwitches />
+            <div className="flex flex-shrink-0 ml-4 items-center"></div>
           </div>
           <div className="border-t border-gray-200 dark:border-gray-700 pb-3 pt-4">
             <div className="mx-auto flex max-w-3xl items-center px-4 sm:px-6">

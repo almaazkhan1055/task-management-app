@@ -27,7 +27,9 @@ export default function Home() {
     const user = localStorage.getItem("userEmail");
     if (!user) router.push("/");
     if (user) router.push("/home");
-    fetchTasks();
+    fetchTasks().then((data) => {
+      setTasks(data);
+    });
   }, []);
 
   const fetchTasks = async () => {
@@ -45,7 +47,7 @@ export default function Home() {
         ...data[key],
       }));
 
-      setTasks(tasksArray);
+      return tasksArray;
     } catch (error) {
       console.error("Error fetching tasks:", error);
       setError("No task found.");
@@ -137,64 +139,67 @@ export default function Home() {
 
   return (
     <>
-      <NavBar tasks={tasks} />
-      <div
-        onClick={handleFilterClick}
-        className="flex items-center justify-end px-10 py-5"
-      >
-        <FaFilter />
+      <NavBar fetchTasks={fetchTasks} setTasks={setTasks} />
+      <div className="dark:bg-gray-800  flex item-center justify-end">
+        <button
+          onClick={handleFilterClick}
+          className="dark:text-white flex items-center justify-center px-10 py-5 "
+        >
+          <FaFilter />
+        </button>
       </div>
       <div>{screen && <Modal tasks={tasks} />}</div>
 
-      <div className="font-bold text-xl px-10 py-5">
-        <h1 className="text-2xl font-bold mb-4">Task List</h1>
+      <div className="dark:bg-gray-800 bg-white font-bold text-xl px-10 py-5 h-full">
+        <h1 className="dark:text-white text-2xl font-bold mb-4">Task List</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {tasks.map((task) => (
-            <Card key={task.id} className="w-full">
-              {editingTaskId === task.id ? (
-                <EditTask
-                  task={task}
-                  onSave={handleSaveEdit}
-                  onCancel={handleCancelEdit}
-                />
-              ) : (
-                <>
-                  <CardHeader className="capitalize">
-                    <CardTitle>Title: {task.title}</CardTitle>
-                    <CardDescription>
-                      Assigned to: {task.assignee}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription className="capitalize">
-                      <span>Description: {task.description}</span>
-                      <br />
-                      <span>Status: {task.taskStatus}</span>
-                    </CardDescription>
-                    <p className="text-sm text-gray-500 mt-2">
-                      Created: {task.createdAt}
-                    </p>
-                    <div className="flex justify-between mt-2">
-                      <Button
-                        onClick={() => handleEditClick(task.id)}
-                        variant="outline"
-                        className="bg-black text-white text-lg hover:bg-green-600 hover:text-white dark:hover:bg-green-600"
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        onClick={() => handleDeleteTask(task.id)}
-                        variant="destructive"
-                        className="text-white text-lg"
-                      >
-                        Delete
-                      </Button>
-                    </div>
-                  </CardContent>
-                </>
-              )}
-            </Card>
-          ))}
+          {tasks.length > 0 &&
+            tasks.map((task) => (
+              <Card key={task.id} className="w-full">
+                {editingTaskId === task.id ? (
+                  <EditTask
+                    task={task}
+                    onSave={handleSaveEdit}
+                    onCancel={handleCancelEdit}
+                  />
+                ) : (
+                  <>
+                    <CardHeader className="capitalize">
+                      <CardTitle>Title: {task.title}</CardTitle>
+                      <CardDescription>
+                        Assigned to: {task.assignee}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription className="capitalize">
+                        <span>Description: {task.description}</span>
+                        <br />
+                        <span>Status: {task.taskStatus}</span>
+                      </CardDescription>
+                      <p className="text-sm text-gray-500 mt-2">
+                        Created: {task.createdAt}
+                      </p>
+                      <div className="flex justify-between mt-2">
+                        <Button
+                          onClick={() => handleEditClick(task.id)}
+                          variant="outline"
+                          className="bg-black text-white text-lg hover:bg-green-600 hover:text-white dark:hover:bg-green-600"
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          onClick={() => handleDeleteTask(task.id)}
+                          variant="destructive"
+                          className="text-white text-lg"
+                        >
+                          Delete
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </>
+                )}
+              </Card>
+            ))}
         </div>
       </div>
     </>

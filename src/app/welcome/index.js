@@ -9,8 +9,8 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import ToggleTheme from "@/components/ui/toggleTheme";
 import { useRouter } from "next/navigation";
+import CustomizedSwitches from "../switch";
 
 const Welcome = () => {
   const router = useRouter();
@@ -33,7 +33,7 @@ const Welcome = () => {
           <Link href="/signup">
             <Button>Create an account?</Button>
           </Link>
-          <ToggleTheme />
+          <CustomizedSwitches />
         </CardFooter>
       </Card>
     </div>
