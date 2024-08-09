@@ -141,11 +141,13 @@ const FilteredTask = () => {
   return (
     <>
       <NavBar />
-      <h2 className="text-3xl m-5">Filtered tasks for {assignee}</h2>
+      <h2 className="dark:bg-gray-800 text-3xl m-5">
+        Filtered tasks for {assignee}
+      </h2>
       {filteredTasks.length === 0 ? (
         <p className="text-xl m-5">No tasks found for this assignee.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 m-5">
+        <div className="dar:bg-gray-800 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 m-5">
           {filteredTasks.map((task) => (
             <Card key={task.id} className="w-full">
               {editingTaskId === task.id ? (
@@ -198,4 +200,10 @@ const FilteredTask = () => {
   );
 };
 
-export default FilteredTask;
+export default function FilteredTaskPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <FilteredTask />
+    </Suspense>
+  );
+}
